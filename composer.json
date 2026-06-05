@@ -1,0 +1,8 @@
+{
+    "name": "mandi/property",
+    "description": "Mandi Property Website",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    }
+}
