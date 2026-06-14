@@ -5,7 +5,6 @@ if (toggle && navLinks) {
   toggle.addEventListener('click', () => {
     navLinks.classList.toggle('open');
   });
-  // Close on link click
   navLinks.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => navLinks.classList.remove('open'));
   });
@@ -25,28 +24,30 @@ const observer = new IntersectionObserver(entries => {
 }, { rootMargin: '-40% 0px -55% 0px' });
 sections.forEach(s => observer.observe(s));
 
-// Sticky header shadow
+// Sticky header shrink + shadow
 const header = document.querySelector('.site-header');
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 60) {
-    header.style.boxShadow = '0 4px 32px rgba(0,0,0,0.4)';
-  } else {
-    header.style.boxShadow = 'none';
-  }
+  header.classList.toggle('scrolled', window.scrollY > 60);
 });
 
-// Stagger animation for cards on scroll
-const animateOnScroll = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
+// Scroll-reveal: add .reveal to key elements, observe them
+const revealElements = document.querySelectorAll(
+  '.service-card, .portfolio-card, .stat-card, .sms-item, .section-header, .hero-content, .hero-visual, .why-text, .why-stats, .contact-info, .contact-form-wrap'
+);
+revealElements.forEach(el => el.classList.add('reveal'));
+
+// Mark grids as stagger containers
+document.querySelectorAll('.services-grid, .portfolio-grid, .why-stats').forEach(g => {
+  g.classList.add('reveal-stagger');
+});
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.style.animationDelay = `${i * 0.08}s`;
-      entry.target.classList.add('fade-up');
-      animateOnScroll.unobserve(entry.target);
+      entry.target.classList.add('revealed');
+      revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.08 });
 
-document.querySelectorAll('.service-card, .portfolio-card, .stat-card').forEach(el => {
-  el.style.opacity = '0';
-  animateOnScroll.observe(el);
-});
+revealElements.forEach(el => revealObserver.observe(el));
