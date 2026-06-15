@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/config.php';
+
 $page_title = "M&I Property Services LLC – Professional Property Maintenance & Renovation, Paterson NJ";
 $company_name = "M&I Property Services LLC";
 $phone = "5512266118";
@@ -481,13 +484,19 @@ $address = "440 Edmund Ave, Fl 2, Paterson, NJ 07502";
           $service = htmlspecialchars(trim($_POST['service'] ?? ''));
           $details = htmlspecialchars(trim($_POST['details'] ?? ''));
           if ($name && $cemail && $details) {
-            $to      = $email;
-            $subject = "New Estimate Request from $name – M&I Property Services";
-            $body    = "Name: $name\nEmail: $cemail\nPhone: $cphone\nService: $service\n\nDetails:\n$details";
-            $headers = "From: noreply@mandiproperty.com\r\nReply-To: $cemail";
-            if (mail($to, $subject, $body, $headers)) {
+            try {
+              $resend  = Resend::client(RESEND_API_KEY);
+              $subject = "New Estimate Request from $name – M&I Property Services";
+              $htmlBody = nl2br("Name: $name\nEmail: $cemail\nPhone: $cphone\nService: $service\n\nDetails:\n$details");
+              $resend->emails->send([
+                'from'     => RESEND_FROM,
+                'to'       => [$email],
+                'reply_to' => $cemail,
+                'subject'  => $subject,
+                'html'     => "<p>$htmlBody</p>",
+              ]);
               $form_success = true;
-            } else {
+            } catch (\Exception $e) {
               $form_error = 'Message could not be sent. Please email us directly.';
             }
           } else {
