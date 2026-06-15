@@ -497,7 +497,7 @@ $address = "440 Edmund Ave, Fl 2, Paterson, NJ 07502";
               ]);
               $form_success = true;
             } catch (\Exception $e) {
-              $form_error = 'Message could not be sent. Please email us directly.';
+              $form_error = 'Error: ' . $e->getMessage();
             }
           } else {
             $form_error = 'Please fill in all required fields.';

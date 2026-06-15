@@ -4,4 +4,4 @@
 define('RESEND_API_KEY', getenv('RESEND_API_KEY'));
 
 // Verified sending domain in Resend
-define('RESEND_FROM', 'M&I Property Services <noreply@mandiproperty.com>');
+define('RESEND_FROM', 'M&I Property Services <noreply@custommail.mandipropertyservices.com>');
